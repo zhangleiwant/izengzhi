@@ -41,7 +41,7 @@ class Lesson(models.Model):
 class Video(models.Model):
     lesson = models.ForeignKey(Lesson, verbose_name=u'所属章节',on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name=u'视频名称')
-    dd_time = models.IntegerField(default=datetime.now, verbose_name=u'添加时间')
+    add_time = models.IntegerField(default=datetime.now, verbose_name=u'添加时间')
 
     class Meta:
         verbose_name = u'视频信息'

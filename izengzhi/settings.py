@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'apps.blog.apps.BlogConfig',
     'apps.user.apps.UserConfig',
     'apps.course',
-    'apps.organization'
+    'apps.organization',
+    'apps.operation',
 ]
 # User.user_permissions
 AUTH_USER_MODEL = "user.UserProfile"
