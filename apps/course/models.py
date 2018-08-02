@@ -12,7 +12,7 @@ class Course(models.Model):
     learn_duration = models.IntegerField(default=0, verbose_name=u'学习时长(分钟数)')
     student_num = models.IntegerField(default=0, verbose_name=u'学习人数')
     favorites_num = models.IntegerField(default=0, verbose_name=u'收藏人数')
-    image = models.ImageField(max_length='200', upload_to='course/%Y/%m', verbose_name=u'封面图')
+    image = models.ImageField(max_length=200, upload_to='course/%Y/%m', verbose_name=u'封面图')
     click_num = models.IntegerField(default=0, verbose_name=u'点击数')
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
 
@@ -28,7 +28,7 @@ class Lesson(models.Model):
     # 外键 TypeError: __init__() missing 1 required positional argument: 'on_delete'
     course = models.ForeignKey(Course, verbose_name=u'所属课程',on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name=u'章节名称')
-    add_time = models.IntegerField(default=datetime.now, verbose_name=u'添加时间')
+    add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
 
     class Meta:
         verbose_name = u'章节信息'
@@ -41,7 +41,7 @@ class Lesson(models.Model):
 class Video(models.Model):
     lesson = models.ForeignKey(Lesson, verbose_name=u'所属章节',on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name=u'视频名称')
-    add_time = models.IntegerField(default=datetime.now, verbose_name=u'添加时间')
+    add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
 
     class Meta:
         verbose_name = u'视频信息'

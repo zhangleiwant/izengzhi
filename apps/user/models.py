@@ -7,8 +7,8 @@ from datetime import datetime
 # Create your models here.
 class UserProfile(AbstractUser):
     nick_name = models.CharField(max_length=20, default=u'', verbose_name=u'用户昵称')
-    birth = models.DateField(default=u'', null=True, blank=True)
-    gender = models.CharField(max_length=5, choices=(('male', u'男'), ('femal', u'女')), default='female',
+    birth = models.DateField(null=True, blank=True, verbose_name=u'用户生日')
+    gender = models.CharField(max_length=6, choices=(('male', u'男'), ('femal', u'女')), default='female',
                               verbose_name=u'用户性别')
     address = models.CharField(max_length=200, default=u'', verbose_name=u'用户地址')
     mobile = models.CharField(max_length=11, default=u'', null=True, blank=True, verbose_name='手机号码')
@@ -33,6 +33,9 @@ class EmailVerifyCode(models.Model):
     class Meta:
         verbose_name = u'邮箱验证码'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '{0}--({1})'.format(self.code, self.email)
 
 
 class Banner(models.Model):
