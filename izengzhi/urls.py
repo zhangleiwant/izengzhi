@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 import xadmin
 from django.views.generic import TemplateView
+from apps.user.views import user_login
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -24,5 +25,5 @@ urlpatterns = [
     # 以前使用includ 在app里面url进行render
     # 现在用更简单的方式 templateview 模板文件
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
-    path('login/', TemplateView.as_view(template_name='login.html'), name='login')
+    path('login/', user_login, name='login')
 ]
