@@ -4,7 +4,7 @@ from django.contrib.auth.backends import ModelBackend
 from .models import UserProfile, EmailVerifyCode
 from django.db.models import Q
 from django.views.generic.base import View
-from .froms import LoginForm, RegisterForm, ForgetPwdForm
+from .froms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
 from django.contrib.auth.hashers import make_password
 from apps.utils.email_send import send_email_to_user
 
@@ -39,10 +39,30 @@ class ActiveUserView(View):
 class ResetPwdView(View):
     def get(self, request, reset_code):
         all_user_code = EmailVerifyCode.objects.filter(code=reset_code)
-        for random_code in all_user_code:
-            email = random_code.email
+        if all_user_code:
+            for random_code in all_user_code:
+                email = random_code.email
+                return render(request, 'password_reset.html', {'email': email})
+        else:
+            return render(request, 'verify_failue.html')
+
+
+class ModifyPwdView(View):
+    def post(self, request):
+        modify_form = ModifyPwdForm(request.POST)
+        if modify_form.is_valid():
+            password = request.POST.get('password', '')
+            password2 = request.POST.get('password2', '')
+            email = request.POST.get('email', '')
+            if password != password2:
+                return render(request, 'password_reset.html', {'msg': '两次输入的密码不一致', 'email': email})
             user = UserProfile.objects.get(email=email)
-            # 操作
+            user.password = make_password(password)
+            user.save()
+            return render(request, 'login.html')
+        else:
+            email = request.POST.get('email', '')
+            return render(request, 'password_reset.html', {'modify_form': modify_form, 'email': email})
 
 
 class RegisterView(View):
@@ -105,8 +125,12 @@ class ForgetPwdView(View):
         forget_pwd_form = ForgetPwdForm(request.POST)
         if forget_pwd_form.is_valid():
             email = request.POST.get('email')
-            send_email_to_user(email, 'forget')
-            return render(request, 'forget_pwd_email_send_success.html')
+            # 必须判断邮箱 不是所有邮箱验证通过就发送邮件
+            if UserProfile.objects.filter(email=email):
+                send_email_to_user(email, 'forget')
+                return render(request, 'forget_pwd_email_send_success.html')
+            else:
+                return render(request, 'forgetpwd.html', {'msg': '该邮箱还没有注册'})
         else:
             return render(request, 'forgetpwd.html', {'forget_pwd_form': forget_pwd_form})
 

@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 import xadmin
 from django.views.generic import TemplateView
-from apps.user.views import user_login, LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView
+from apps.user.views import user_login, LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView,ModifyPwdView
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -33,5 +33,6 @@ urlpatterns = [
     #     忘记密码
     path('forget/', ForgetPwdView.as_view(), name='forget_pwd'),
     #     邮箱重置密码
-    path('reset/<reset_code>', ResetPwdView.as_view(), name='reset_pwd')
+    path('reset/<reset_code>', ResetPwdView.as_view(), name='reset_pwd'),
+    path('modify_pwd/',ModifyPwdView.as_view(),name='modify_pwd'),
 ]
