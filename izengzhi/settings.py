@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'apps.organization.apps.OrganizationConfig',
     'apps.operation.apps.OperationConfig',
     'xadmin',
-    'crispy_forms'
+    'crispy_forms',
+    'captcha',
 ]
 # User.user_permissions
 AUTH_USER_MODEL = "user.UserProfile"
@@ -134,3 +135,11 @@ STATICFILES_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'apps.user.views.CustomBackend',
 )
+
+# 配置发件箱邮箱服务器
+EMAIL_HOST = 'smtp.sina.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'zhangleixman@sina.com'
+EMAIL_HOST_PASSWORD = 'Leiailan8087'
+EMAIL_USE_TLS = False
+EMAIL_FROM = 'zhangleixman@sina.com'
