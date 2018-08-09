@@ -28,9 +28,15 @@ def send_email_to_user(email, send_type='register'):
     email_verify_code.code = random_str
     email_verify_code.save()
     if send_type == 'register':
-        email_title = '爱增值网络注册激活软件'
+        email_title = '爱增值网络注册激活邮件'
         email_content = '就差最后一步，点击链接激活你的邮箱地址，链接地址是：http://127.0.0.1:8000/active/{0}'.format(random_str)
         # 发送邮件  返回值如果是1 就是成功
         status = send_mail(email_title, email_content, EMAIL_FROM, [email])
         if status:
-            return random_str
+           pass
+    else:
+        email_title = '爱增值网络重置密码邮件'
+        email_content = '点击链接地址重新设置你的密码，链接地址是：http://127.0.0.1:8000/reset/{0}'.format(random_str)
+        status = send_mail(email_title, email_content, EMAIL_FROM, [email])
+        if status:
+            pass

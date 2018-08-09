@@ -4,7 +4,7 @@ from django.contrib.auth.backends import ModelBackend
 from .models import UserProfile, EmailVerifyCode
 from django.db.models import Q
 from django.views.generic.base import View
-from .froms import LoginForm, RegisterForm
+from .froms import LoginForm, RegisterForm, ForgetPwdForm
 from django.contrib.auth.hashers import make_password
 from apps.utils.email_send import send_email_to_user
 
@@ -31,31 +31,44 @@ class ActiveUserView(View):
                 user = UserProfile.objects.get(email=email)
                 user.is_active = True
                 user.save()
-        return render(request, 'login.html')
+            return render(request, 'login.html')
+        else:
+            return render(request, 'verify_failue.html')
 
 
-# 注册
+class ResetPwdView(View):
+    def get(self, request, reset_code):
+        all_user_code = EmailVerifyCode.objects.filter(code=reset_code)
+        for random_code in all_user_code:
+            email = random_code.email
+            user = UserProfile.objects.get(email=email)
+            # 操作
+
+
 class RegisterView(View):
     def get(self, request):
         register_from = RegisterForm()
         return render(request, 'register.html', {'register_form': register_from})
 
     def post(self, request):
-        register_from = RegisterForm(request.POST)
-        if register_from.is_valid():
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
             email = request.POST.get('email', '')
-            password = request.POST.get('password', '')
-            user_profile = UserProfile()
-            user_profile.email = email
-            user_profile.username = email
-            user_profile.password = make_password(password)
-            user_profile.is_active = False
-            user_profile.save()
-            #     发送邮件
-            send_email_to_user(email, 'register')
-            return render(request, 'login.html')
+            if UserProfile.objects.filter(email=email):
+                return render(request, 'register.html', {'msg': '该邮箱已经注册过了', 'register_form': register_form})
+            else:
+                password = request.POST.get('password', '')
+                user_profile = UserProfile()
+                user_profile.email = email
+                user_profile.username = email
+                user_profile.password = make_password(password)
+                user_profile.is_active = False
+                user_profile.save()
+                #     发送邮件
+                send_email_to_user(email, 'register')
+                return render(request, 'login.html')
         else:
-            return render(request, 'register.html', {'register_form': register_from})
+            return render(request, 'register.html', {'register_form': register_form})
 
 
 # 使用django里面自带的view里面又封装好的方法  不用判断请求类型
@@ -80,6 +93,22 @@ class LoginView(View):
                 return render(request, 'login.html', {'msg': '用户名或密码错误'})
         else:
             return render(request, 'login.html', {'error': login_form.errors})
+
+
+class ForgetPwdView(View):
+    def get(self, request):
+        forget_pwd_form = ForgetPwdForm()
+        return render(request, 'forgetpwd.html', {'forget_pwd_form': forget_pwd_form})
+
+    def post(self, request):
+        # 。。。post表单需要参数
+        forget_pwd_form = ForgetPwdForm(request.POST)
+        if forget_pwd_form.is_valid():
+            email = request.POST.get('email')
+            send_email_to_user(email, 'forget')
+            return render(request, 'forget_pwd_email_send_success.html')
+        else:
+            return render(request, 'forgetpwd.html', {'forget_pwd_form': forget_pwd_form})
 
 
 # 前期的方法需要判断请求方法。(不建议该方法)

@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 import xadmin
 from django.views.generic import TemplateView
-from apps.user.views import user_login, LoginView, RegisterView, ActiveUserView
+from apps.user.views import user_login, LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -29,5 +29,9 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('captcha/', include('captcha.urls')),
     # 拿到链接中的验证码 和数据库保存的验证码进行匹配验证
-    path('active/<active_code>', ActiveUserView.as_view(), name='activeuser')
+    path('active/<active_code>', ActiveUserView.as_view(), name='activeuser'),
+    #     忘记密码
+    path('forget/', ForgetPwdView.as_view(), name='forget_pwd'),
+    #     邮箱重置密码
+    path('reset/<reset_code>', ResetPwdView.as_view(), name='reset_pwd')
 ]
